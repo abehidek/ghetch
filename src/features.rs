@@ -26,6 +26,13 @@ pub fn get() -> Vec<Feature> {
             flags: vec!["-u".to_string(), "--user".to_string()],
             function: fetch_user,
         },
+        Feature {
+            name: "help".to_string(),
+            description: "All commands to help user".to_string(),
+            necessary_args: "".to_string(),
+            flags: vec!["-h".to_string(), "--help".to_string()],
+            function: help,
+        },
     ]
 }
 
@@ -44,4 +51,17 @@ fn fetch_repo(reponame: &str) {
         needs to accept both url and "username/reponame" formats
         also, needs to count the lines and create a language bar for the repo
     */
+}
+
+pub fn help(_str: &str) {
+    println!(
+        "USAGE: ghetch [options]
+    \nOPTIONS:"
+    );
+    for feature in get() {
+        print!("    {:?}", feature.flags);
+        if !feature.necessary_args.is_empty() {
+            println!("[args: {}]", feature.necessary_args)
+        }
+    }
 }

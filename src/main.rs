@@ -38,6 +38,6 @@ fn main() {
     if args.len() > 1 {
         match_args(args, &features);
     } else {
-        println!("commands: ")
+        features::help("");
     }
 }
