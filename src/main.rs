@@ -2,13 +2,27 @@ use std::env::{self};
 
 fn fetch_user(username: &str) {
     println!("[log] fetching user {}", username);
+    /*
+        needs to accept both url and "username" formats
+        also, needs to count the lines and create a language bar for the user (most used langs)
+    */
 }
 
 fn fetch_repo(reponame: &str) {
     println!("[log] fetching repository {}", reponame);
+
+    /*
+        needs to accept both url and "username/reponame" formats
+        also, needs to count the lines and create a language bar for the repo
+    */
 }
 
 fn match_args(args: Vec<String>) {
+    /*
+        need simpliciation and support for easy to add feature
+        minimalist version of onefetch
+    */
+
     for (index, arg) in args.iter().enumerate() {
         match &&arg[..] {
             &"-r" | &"--repository" => {
