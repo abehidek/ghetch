@@ -1,3 +1,7 @@
+use std::process::Output;
+
+use futures::Future;
+
 pub struct Feature {
     pub name: String,
     pub description: String,
@@ -11,7 +15,7 @@ pub fn get() -> Vec<Feature> {
         Feature {
             name: "fetch-repo".to_string(),
             description: "Fetch a github repo".to_string(),
-            necessary_args: "repository name".to_string(),
+            necessary_args: "username-reponame or repo url".to_string(),
             flags: vec![
                 "-r".to_string(),
                 "--repository".to_string(),
@@ -22,7 +26,7 @@ pub fn get() -> Vec<Feature> {
         Feature {
             name: "fetch-user".to_string(),
             description: "Fetch a github user".to_string(),
-            necessary_args: "user name".to_string(),
+            necessary_args: "username or user url".to_string(),
             flags: vec!["-u".to_string(), "--user".to_string()],
             function: fetch_user,
         },
@@ -36,6 +40,10 @@ pub fn get() -> Vec<Feature> {
     ]
 }
 
+enum FetchErrors {
+    Failed,
+}
+
 fn fetch_user(username: &str) {
     println!("[log] fetching user {}", username);
     /*
@@ -44,11 +52,32 @@ fn fetch_user(username: &str) {
     */
 }
 
-fn fetch_repo(reponame: &str) {
-    println!("[log] fetching repository {}", reponame);
+// async fn fetch_api(url: String) {
+//     let reqwest_client = reqwest::Client::new();
+//     let response = reqwest_client
+//         .get(url)
+//         .header(USER_AGENT, "rust")
+//         .send()
+//         .await
+//         .unwrap()
+//         .text()
+//         .await
+//         .expect("Fetch failed");
+//     print!("Response: {}", response.to_string());
+// }
 
+fn fetch_repo(user_arg: &str) {
+    println!("[log] fetching repository {}", user_arg);
+
+    if !user_arg.contains("-") {
+        println!("Invalid reponame");
+        return;
+    };
+
+    let vec: Vec<&str> = user_arg.split("-").collect();
+    let url: String = format!("https://api.github.com/users/{}/{}", vec[0], vec[1]);
     /*
-        needs to accept both url and "username/reponame" formats
+        needs to accept both url and "username-reponame" formats
         also, needs to count the lines and create a language bar for the repo
     */
 }
@@ -61,7 +90,7 @@ pub fn help(_str: &str) {
     for feature in get() {
         print!("    {:?}", feature.flags);
         if !feature.necessary_args.is_empty() {
-            println!("[args: {}]", feature.necessary_args)
+            println!(" necessary args: {}", feature.necessary_args)
         }
     }
 }

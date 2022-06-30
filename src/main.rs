@@ -1,7 +1,7 @@
 mod features;
 use std::env;
 
-fn match_args(args: Vec<String>, features: &Vec<features::Feature>) {
+fn match_args(args: Vec<String>, features: Vec<features::Feature>) {
     /*
         need simpliciation and support for easy to add feature
         minimalist version of onefetch
@@ -36,7 +36,7 @@ fn main() {
     let features: Vec<features::Feature> = features::get();
 
     if args.len() > 1 {
-        match_args(args, &features);
+        match_args(args, features);
     } else {
         features::help("");
     }
