@@ -1,4 +1,6 @@
 mod features;
+mod fetch_repo;
+mod fetch_user;
 use std::env;
 use tokio;
 
@@ -12,13 +14,13 @@ async fn match_args(args: Vec<String>) {
         match &arg[..] {
             "-r" | "--repo" | "--repository" => {
                 if !args.len() >= arg_index + 1 {
-                    features::fetch_repo(&args[arg_index + 1][..]).await;
+                    fetch_repo::fetch(&args[arg_index + 1][..]).await;
                     return;
                 }
             }
             "-u" | "--user" => {
                 if args.len() >= arg_index + 1 {
-                    features::fetch_user(&args[arg_index + 1][..]).await;
+                    fetch_user::fetch(&args[arg_index + 1][..]).await;
                     return;
                 }
             }
