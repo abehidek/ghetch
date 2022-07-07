@@ -1,6 +1,4 @@
 use super::features;
-use std::collections::HashMap;
-use std::iter::Map;
 
 use serde::Deserialize;
 use serde_json::{Number, Value};
@@ -65,18 +63,60 @@ pub async fn fetch(user_arg: &str) {
     let repo_langs_str = features::fetch_api(url_repo_langs).await;
     let repo_langs_val: serde_json::Value =
         serde_json::from_str(&repo_langs_str).expect("Bad json");
-    let repo_langs = repo_langs_val.as_object();
+    let mut default_repo_langs = serde_json::Map::new();
+    default_repo_langs.insert(
+        "no lang".to_string(),
+        serde_json::Value::Number(serde_json::Number::from(0)),
+    );
+    let repo_langs = repo_langs_val.as_object().unwrap_or(&default_repo_langs);
 
-    match repo_langs {
-        Some(value) => {
-            println!("{:?}", value);
-        }
-        None => {
-            println!("Nao existe");
-        }
+    // match repo_langs {
+    //     Some(value) => {
+    //         // println!("{:?}", value);
+    //         for (key, value) in value.into_iter() {
+    //             println!("{} / {}", key, value)
+    //         }
+    //     }
+    //     None => {
+    //         println!("Nao existe");
+    //     }
+    // }
+
+    print_general(repo, last_commit);
+    print_langs(repo_langs);
+}
+
+fn print_general(repo: RepositoryResponse, last_commit: Vec<RepositoryLastCommitResponse>) {
+    println!(
+        "
+General:
+
+    id: {}
+    name: {}
+    stars: {}
+    watchers: {}
+    created at: {}
+    last commit: {:?}
+    ",
+        repo.id,
+        repo.name,
+        repo.stargazers_count,
+        repo.watchers_count,
+        repo.created_at,
+        last_commit
+    );
+}
+
+fn print_langs(repo_langs: &serde_json::Map<String, Value>) -> () {
+    println!(
+        "
+Repository Langs"
+    );
+    for (key, value) in repo_langs.into_iter() {
+        print!(
+            "
+    {} / {}",
+            key, value
+        )
     }
-
-    // println!("{}", repo.id);
-    // println!("{}", last_commit[0].commit.author.name);
-    // println!("{:?}", repo_langs_val.as_object());
 }
